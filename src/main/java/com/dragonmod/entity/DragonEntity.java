@@ -235,7 +235,15 @@ public class DragonEntity extends TamableAnimal {
     @Nullable
     @Override
     public LivingEntity getControllingPassenger() {
-        if (this.getFirstPassenger() instanceof Player player && this.isSaddled() && this.isOwnedBy(player)) {
+        // POPRAWKA KLUCZOWEGO BŁĘDU: wcześniejszy warunek wymagał
+        // isOwnedBy(player), czyli CAŁA logika sterowania (włącznie z ruchem
+        // poziomym!) nigdy się nie uruchamiała dla nieoswojonego smoka - mimo
+        // że dosiadanie przez mobInteract() dopuszcza jazdę na każdym
+        // osiodłanym smoku, niezależnie od oswojenia. To niespójność była
+        // prawdziwą przyczyną braku wznoszenia/opadania: pozorny "działający"
+        // ruch poziomy to najpewniej samo błądzenie AI smoka, nie sterowanie
+        // gracza. Warunek dopasowany teraz do rzeczywistej reguły dosiadania.
+        if (this.getFirstPassenger() instanceof Player player && this.isSaddled()) {
             return player;
         }
         return null;
@@ -257,6 +265,14 @@ public class DragonEntity extends TamableAnimal {
         if (this.isAlive()) {
             if (this.isVehicle() && canBeControlledByRider()) {
                 LivingEntity controller = this.getControllingPassenger();
+
+                // LOG DIAGNOSTYCZNY (bezwarunkowy, co ok. 3 sek.) - potwierdza,
+                // czy w ogóle wchodzimy w tę gałąź kodu, niezależnie od klawiszy.
+                if (this.tickCount % 60 == 0) {
+                    com.dragonmod.ModMain.LOGGER.info("[DragonMod-TRAVEL-BRANCH] wchodzę w gałąź sterowania, controller={} ascendInput={} descendInput={} side={}",
+                            controller, this.ascendInput, this.descendInput,
+                            this.level().isClientSide() ? "KLIENT" : "SERWER");
+                }
 
                 this.setYRot(controller.getYRot());
                 this.yRotO = this.getYRot();

@@ -38,5 +38,8 @@ public class ModMain implements ModInitializer {
         ModNetworking.registerServerReceivers();
 
         LOGGER.info("[DragonMod] Gotowe.");
+        // ZNACZNIK DIAGNOSTYCZNY WERSJI - pozwala jednoznacznie stwierdzić w logu,
+        // czy uruchomiony jar to faktycznie ta wersja, a nie stara/zbuforowana.
+        LOGGER.info("[DragonMod-WERSJA] BUILD-DEBUG-4-vertical-fix");
     }
 }

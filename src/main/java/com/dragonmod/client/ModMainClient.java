@@ -3,11 +3,15 @@ package com.dragonmod.client;
 import com.dragonmod.entity.DragonEntity;
 import com.dragonmod.entity.ModEntities;
 import com.dragonmod.network.ModNetworking;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.minecraft.client.KeyMapping;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Punkt wejścia inicjalizowany TYLKO na kliencie. Serwer dedykowany nigdy nie
@@ -17,8 +21,22 @@ import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
  * UWAGA MAPPINGI: Yarn "GameOptions" -> Mojang "Options"; pola klawiszy
  * to "keyJump"/"keyShift" (nie jumpKey/sneakKey), a metoda sprawdzająca
  * wciśnięcie klawisza w Mojang mappings nazywa się "isDown()" (nie isPressed()).
+ *
+ * UWAGA - POPRAWKA BŁĘDU: Shift ("keyShift") jest w wanilii jednocześnie
+ * klawiszem ZSIADANIA z wierzchowca - silnik obsługuje to wewnętrznie,
+ * niezależnie od naszego kodu, więc trzymanie Shift do "opadania" powodowało
+ * natychmiastowe zsiadanie zamiast lotu w dół. Dlatego rejestrujemy WŁASNY,
+ * osobny klawisz (domyślnie Lewy Ctrl) wyłącznie do opadania smokiem -
+ * gracz może go zmienić w Opcje -> Sterowanie.
  */
 public class ModMainClient implements ClientModInitializer {
+
+    private static final KeyMapping DESCEND_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.dragonmod.descend",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_LEFT_CONTROL,
+            "key.categories.dragonmod"
+    ));
 
     @Override
     public void onInitializeClient() {
@@ -38,7 +56,7 @@ public class ModMainClient implements ClientModInitializer {
         // "Packet type ... is already registered!".
 
         // Co tick klienta: jeśli gracz aktualnie jedzie na smoku, wysyłamy stan
-        // klawiszy Space (wznoszenie) / Shift (opadanie) do serwera.
+        // klawiszy Space (wznoszenie) / własny klawisz opadania do serwera.
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.options == null) return;
 
@@ -52,11 +70,12 @@ public class ModMainClient implements ClientModInitializer {
 
             if (client.player.getVehicle() instanceof DragonEntity) {
                 boolean ascend = client.options.keyJump.isDown();
-                boolean descend = client.options.keyShift.isDown();
+                boolean descend = DESCEND_KEY.isDown();
 
                 // LOG DIAGNOSTYCZNY - do usunięcia po znalezieniu przyczyny
                 // problemu z wznoszeniem/opadaniem. Wypisuje się tylko gdy
-                // faktycznie trzymasz Space lub Shift, żeby nie zaśmiecać logu.
+                // faktycznie trzymasz Space lub klawisz opadania, żeby nie
+                // zaśmiecać logu.
                 if (ascend || descend) {
                     com.dragonmod.ModMain.LOGGER.info("[DragonMod-KLIENT] jadę na smoku, wysyłam ascend={} descend={} canSend={}",
                             ascend, descend, ClientPlayNetworking.canSend(ModNetworking.DragonFlightInputPayload.TYPE));
@@ -69,3 +88,4 @@ public class ModMainClient implements ClientModInitializer {
         });
     }
 }
+
