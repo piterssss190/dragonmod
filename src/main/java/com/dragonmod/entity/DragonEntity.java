@@ -70,7 +70,11 @@ public class DragonEntity extends TamableAnimal {
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.FLYING_SPEED, 0.9D)
                 .add(Attributes.FOLLOW_RANGE, 32.0D)
-                .add(Attributes.ARMOR, 4.0D);
+                .add(Attributes.ARMOR, 4.0D)
+                // POTWIERDZONE realnym crashem: TemptGoal w 26.2 wymaga własnego
+                // atrybutu "tempt_range" (nowość względem starszych wersji, gdzie
+                // zasięg kuszenia był wpisany na sztywno w kodzie silnika).
+                .add(Attributes.TEMPT_RANGE, 10.0D);
     }
 
     @Override
