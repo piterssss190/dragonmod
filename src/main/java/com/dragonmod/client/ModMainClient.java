@@ -31,8 +31,11 @@ public class ModMainClient implements ClientModInitializer {
         // Powiązanie typu encji z rendererem - WYŁĄCZNIE tutaj, nigdy w kodzie wspólnym
         EntityRendererRegistry.register(ModEntities.DRAGON, DragonRenderer::new);
 
-        // Rejestracja typu pakietu po stronie klienta (musi być identyczna jak na serwerze)
-        ModNetworking.registerPayloadType();
+        // UWAGA: NIE rejestrujemy tu ponownie typu pakietu (ModNetworking.registerPayloadType())!
+        // Kod wspólny (ModMain.onInitialize -> ModNetworking.registerServerReceivers) już to
+        // robi i uruchamia się RÓWNIEŻ na kliencie (to zwykła metoda Java, nie coś
+        // ograniczonego do serwera) - podwójna rejestracja powodowała crash
+        // "Packet type ... is already registered!".
 
         // Co tick klienta: jeśli gracz aktualnie jedzie na smoku, wysyłamy stan
         // klawiszy Space (wznoszenie) / Shift (opadanie) do serwera.
