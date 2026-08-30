@@ -269,13 +269,29 @@ public class DragonEntity extends TamableAnimal {
                 float forward = controller.zza;
                 if (forward <= 0f) forward *= 0.25f;
 
-                double vertical = 0.0D;
-                if (this.ascendInput) vertical = 1.0D;
-                else if (this.descendInput) vertical = -1.0D;
+                // UWAGA - POPRAWKA BŁĘDU: silnik NIE tłumaczy automatycznie
+                // składowej Y wektora przekazanego do travel() na ruch pionowy
+                // dla istoty niepływającej (to działa tylko w wodzie/lawie).
+                // Trzeba ręcznie ustawić prędkość pionową PRZED wywołaniem
+                // super.travel() - dokładnie tak, jak robią to w wanilii
+                // pszczoły/papugi. Wcześniej przekazywałem "vertical" tam,
+                // gdzie silnik go po prostu ignorował, więc wznoszenie i
+                // opadanie w ogóle nie działały.
+                Vec3 currentVelocity = this.getDeltaMovement();
+                double verticalSpeed = 0.15D;
+                double newY;
+                if (this.ascendInput) {
+                    newY = verticalSpeed;
+                } else if (this.descendInput) {
+                    newY = -verticalSpeed;
+                } else {
+                    newY = currentVelocity.y * 0.6D; // stopniowo "wypoziomuj" lot
+                }
+                this.setDeltaMovement(currentVelocity.x, newY, currentVelocity.z);
 
                 float flySpeed = (float) this.getAttributeValue(Attributes.FLYING_SPEED);
                 this.setSpeed(flySpeed);
-                super.travel(new Vec3(strafe, vertical, forward));
+                super.travel(new Vec3(strafe, 0.0D, forward));
                 return;
             }
 

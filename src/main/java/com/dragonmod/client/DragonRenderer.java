@@ -17,10 +17,12 @@ import net.minecraft.resources.Identifier;
  */
 public class DragonRenderer extends MobRenderer<DragonEntity, DragonRenderState, DragonModel> {
 
+    // Własna, wygenerowana tekstura dopasowana piksel-w-piksel do UV naszego
+    // modelu (patrz DragonModel.java - texOffs muszą być z nią spójne).
     private static final Identifier TEXTURE = ModMain.id("textures/entity/dragon.png");
 
     public DragonRenderer(EntityRendererProvider.Context context) {
-        super(context, new DragonModel(context.bakeLayer(DragonModel.LAYER)), 1.2f);
+        super(context, new DragonModel(context.bakeLayer(DragonModel.LAYER)), 1.8f);
     }
 
     @Override

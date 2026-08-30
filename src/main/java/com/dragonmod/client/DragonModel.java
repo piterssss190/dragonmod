@@ -53,40 +53,43 @@ public class DragonModel extends EntityModel<DragonRenderState> {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition root = meshDefinition.getRoot();
 
+        // UWAGA: poniższe texOffs MUSZĄ być identyczne z układem policzonym
+        // w skrypcie generującym teksturę (make_texture.py) - to jest to,
+        // co sprawia, że tekstura "pasuje" do modelu piksel w piksel.
         PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-6f, -6f, -14f, 12f, 12f, 28f),
-                PartPose.offset(0f, 12f, 0f));
+                CubeListBuilder.create().texOffs(0, 0).addBox(-12f, -12f, -28f, 24f, 24f, 56f),
+                PartPose.offset(0f, 24f, 0f));
 
         body.addOrReplaceChild("head",
-                CubeListBuilder.create().texOffs(0, 40).addBox(-4f, -4f, -10f, 8f, 8f, 10f),
-                PartPose.offset(0f, -2f, -14f));
+                CubeListBuilder.create().texOffs(0, 82).addBox(-8f, -8f, -20f, 16f, 16f, 20f),
+                PartPose.offset(0f, -4f, -28f));
 
         body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(60, 0).addBox(-2f, -2f, 0f, 4f, 4f, 20f),
-                PartPose.offset(0f, 0f, 14f));
+                CubeListBuilder.create().texOffs(0, 120).addBox(-4f, -4f, 0f, 8f, 8f, 40f),
+                PartPose.offset(0f, 0f, 28f));
 
         body.addOrReplaceChild("left_wing",
-                CubeListBuilder.create().texOffs(0, 80).addBox(0f, 0f, -2f, 24f, 1f, 16f),
-                PartPose.offset(6f, -4f, -2f));
+                CubeListBuilder.create().texOffs(0, 170).addBox(0f, 0f, -4f, 48f, 2f, 32f),
+                PartPose.offset(12f, -8f, -4f));
 
         body.addOrReplaceChild("right_wing",
-                CubeListBuilder.create().texOffs(0, 100).addBox(-24f, 0f, -2f, 24f, 1f, 16f),
-                PartPose.offset(-6f, -4f, -2f));
+                CubeListBuilder.create().texOffs(0, 206).addBox(-48f, 0f, -4f, 48f, 2f, 32f),
+                PartPose.offset(-12f, -8f, -4f));
 
         body.addOrReplaceChild("leg_front_left",
-                CubeListBuilder.create().texOffs(90, 0).addBox(-2f, 0f, -2f, 4f, 10f, 4f),
-                PartPose.offset(5f, 6f, -8f));
+                CubeListBuilder.create().texOffs(0, 242).addBox(-4f, 0f, -4f, 8f, 20f, 8f),
+                PartPose.offset(10f, 12f, -16f));
         body.addOrReplaceChild("leg_front_right",
-                CubeListBuilder.create().texOffs(90, 20).addBox(-2f, 0f, -2f, 4f, 10f, 4f),
-                PartPose.offset(-5f, 6f, -8f));
+                CubeListBuilder.create().texOffs(34, 242).addBox(-4f, 0f, -4f, 8f, 20f, 8f),
+                PartPose.offset(-10f, 12f, -16f));
         body.addOrReplaceChild("leg_back_left",
-                CubeListBuilder.create().texOffs(90, 40).addBox(-2f, 0f, -2f, 4f, 10f, 4f),
-                PartPose.offset(5f, 6f, 8f));
+                CubeListBuilder.create().texOffs(68, 242).addBox(-4f, 0f, -4f, 8f, 20f, 8f),
+                PartPose.offset(10f, 12f, 16f));
         body.addOrReplaceChild("leg_back_right",
-                CubeListBuilder.create().texOffs(90, 60).addBox(-2f, 0f, -2f, 4f, 10f, 4f),
-                PartPose.offset(-5f, 6f, 8f));
+                CubeListBuilder.create().texOffs(102, 242).addBox(-4f, 0f, -4f, 8f, 20f, 8f),
+                PartPose.offset(-10f, 12f, 16f));
 
-        return LayerDefinition.create(meshDefinition, 256, 128);
+        return LayerDefinition.create(meshDefinition, 160, 272);
     }
 
     /**

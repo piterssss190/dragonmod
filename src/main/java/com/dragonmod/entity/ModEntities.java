@@ -28,9 +28,10 @@ public class ModEntities {
             ModMain.id("dragon"),
             EntityType.Builder
                     .of(DragonEntity::new, MobCategory.CREATURE)
-                    // Rozmiar bazowy (dorosły); rozmiar dziecka jest przeliczany dynamicznie
-                    // w DragonEntity#getDimensions() na podstawie stadium wzrostu.
-                    .sized(2.2f, 2.6f)
+                    // Rozmiar bazowy (dorosły) - zwiększony, żeby pasował do
+                    // powiększonej geometrii modelu (poprzedni 2.2x2.6 wyglądał
+                    // niewspółmiernie małe jak na "smoka").
+                    .sized(3.2f, 3.2f)
                     .clientTrackingRange(10)
                     .updateInterval(3)
                     .build(DRAGON_KEY)
