@@ -64,7 +64,14 @@ public class ModNetworking {
                 boolean isOnDragon = player.getVehicle() instanceof DragonEntity;
                 com.dragonmod.ModMain.LOGGER.info("[DragonMod-SERWER] odebrano pakiet ascend={} descend={} isOnDragon={}",
                         payload.ascend(), payload.descend(), isOnDragon);
-                if (player.getVehicle() instanceof DragonEntity dragon && dragon.isOwnedBy(player)) {
+                // POPRAWKA: poprzednio wymagaliśmy dragon.isOwnedBy(player), czyli
+                // sterowanie pionowe działało TYLKO dla oswojonego smoka. Ruch
+                // poziomy (w travel()) nigdy tego nie wymagał - sprawdzał tylko
+                // kto aktualnie steruje (getControllingPassenger()). To niespójność
+                // była realną przyczyną: nieoswojony, ale osiodłany smok dawał się
+                // prowadzić poziomo, ale nigdy pionowo. Ujednolicamy warunek.
+                if (player.getVehicle() instanceof DragonEntity dragon
+                        && dragon.getControllingPassenger() == player) {
                     dragon.setFlightInput(payload.ascend(), payload.descend());
                 }
             });
