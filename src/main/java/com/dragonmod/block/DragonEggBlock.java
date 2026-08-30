@@ -100,7 +100,7 @@ public class DragonEggBlock extends Block {
             level.addFreshEntity(baby);
             level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING,
                     pos.getX() + 0.5, pos.getY() + 0.3, pos.getZ() + 0.5, 20, 0.3, 0.3, 0.3, 0.1);
-            level.playSound(null, pos, SoundEvents.TURTLE_EGG_HATCH.value(), SoundSource.NEUTRAL, 1f, 1f);
+            level.playSound(null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.NEUTRAL, 1f, 1f);
         }
     }
 }

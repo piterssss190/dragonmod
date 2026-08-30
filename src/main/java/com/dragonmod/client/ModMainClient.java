@@ -6,8 +6,8 @@ import com.dragonmod.network.ModNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 
 /**
  * Punkt wejścia inicjalizowany TYLKO na kliencie. Serwer dedykowany nigdy nie
@@ -23,7 +23,10 @@ public class ModMainClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         // Rejestracja geometrii modelu (musi nastąpić przed rejestracją renderera)
-        EntityModelLayerRegistry.registerModelLayer(DragonModel.LAYER, DragonModel::createBodyLayer);
+        // UWAGA MAPPINGI: klasa EntityModelLayerRegistry została przemianowana
+        // na ModelLayerRegistry (potwierdzone oficjalnym przewodnikiem migracji
+        // Fabric API dla 26.1 - docs.fabricmc.net/develop/porting/fabric-api).
+        ModelLayerRegistry.registerModelLayer(DragonModel.LAYER, DragonModel::createBodyLayer);
 
         // Powiązanie typu encji z rendererem - WYŁĄCZNIE tutaj, nigdy w kodzie wspólnym
         EntityRendererRegistry.register(ModEntities.DRAGON, DragonRenderer::new);

@@ -125,7 +125,7 @@ public class DragonEntity extends TamableAnimal {
                     this.setTarget(null);
                     this.setOrderedToSit(true);
                     spawnParticlesServer(ParticleTypes.HEART, 7);
-                    level.playSound(null, blockPosition(), SoundEvents.FOX_SCREECH.value(), SoundSource.NEUTRAL, 1f, 1.2f);
+                    level.playSound(null, blockPosition(), SoundEvents.FOX_SCREECH, SoundSource.NEUTRAL, 1f, 1.2f);
                 } else {
                     spawnParticlesServer(ParticleTypes.SMOKE, 5);
                 }
@@ -169,7 +169,16 @@ public class DragonEntity extends TamableAnimal {
         }
     }
 
-    @Override
+    /**
+     * UWAGA: bez adnotacji @Override - realna sygnatura tej metody w 26.2
+     * różni się od tego, co zakładałem (klasa NeoForge dla ~1.21.x
+     * potwierdza samą NAZWĘ metody "finalizeSpawnChildFromBreeding" jako
+     * istniejącą, ale dokładny kształt parametrów w 26.2 pozostaje
+     * niezweryfikowany). Metoda jest więc na razie martwym kodem - logika
+     * składania jaja NIE uruchomi się automatycznie przy hodowli, dopóki
+     * nie ustalimy poprawnej sygnatury z dekompilowanego źródła. Priorytet
+     * do poprawienia w kolejnej iteracji.
+     */
     public void finalizeSpawnChildFromBreeding(ServerLevel level, Animal mate, @Nullable net.minecraft.world.entity.AgeableMob child) {
         if (!(mate instanceof DragonEntity dragonMate)) return;
 
@@ -189,7 +198,7 @@ public class DragonEntity extends TamableAnimal {
         }
 
         level.sendParticles(ParticleTypes.HAPPY_VILLAGER, getX(), getY(0.7), getZ(), 12, 0.4, 0.4, 0.4, 0.0);
-        level.playSound(null, blockPosition(), SoundEvents.TURTLE_LAY_EGG.value(), SoundSource.NEUTRAL, 0.8f, 1f);
+        level.playSound(null, blockPosition(), SoundEvents.TURTLE_LAY_EGG, SoundSource.NEUTRAL, 0.8f, 1f);
     }
 
     /**
