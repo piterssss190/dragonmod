@@ -1,0 +1,50 @@
+name: Build Dragon Mod
+
+# Uruchamia się automatycznie po każdym wypchnięciu kodu na branch "main",
+# a także ręcznie z zakładki "Actions" na GitHubie (workflow_dispatch).
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobierz kod repozytorium
+        uses: actions/checkout@v4
+
+      - name: Zainstaluj JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      # Krok diagnostyczny: pokazuje w logu, jakiej wersji Javy faktycznie
+      # używa PATH/JAVA_HOME w tym momencie workflow - pozwala od razu
+      # zweryfikować, czy poprzedni krok zadziałał, zamiast zgadywać
+      # na podstawie błędu Loom kilka kroków później.
+      - name: Sprawdź wersję Javy
+        run: java -version
+
+      # Nie dołączyłem plików Gradle Wrapper (gradle-wrapper.jar) do repo,
+      # ponieważ zostały wygenerowane bez dostępu do internetu. Ta akcja
+      # instaluje Gradle bezpośrednio na maszynie CI, więc wrapper nie jest
+      # potrzebny - jeśli sam wygenerujesz wrapper lokalnie (patrz README),
+      # możesz zamienić poniższy krok na zwykłe "./gradlew build".
+      # Loom 1.15.x wymaga Gradle w wersji API 9.2.0+. Używamy najnowszej
+      # stabilnej gałęzi 9.x (sprawdzone na docs.gradle.org - realnie istniejąca
+      # wersja, w przeciwieństwie do poprzednio wpisanego "9.4", które nie istnieje).
+      - name: Zainstaluj Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.7.1'
+
+      - name: Zbuduj mod
+        run: gradle build --stacktrace
+
+      - name: Wgraj gotowy JAR jako artefakt do pobrania
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragonmod-jar
+          path: build/libs/*.jar
