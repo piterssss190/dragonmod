@@ -237,7 +237,13 @@ public class DragonEntity extends TamableAnimal {
         return null;
     }
 
-    @Override
+    /**
+     * UWAGA: bez @Override - ten hook prawdopodobnie nie jest już częścią
+     * kontraktu klasy bazowej w 26.2 (o tym, kto steruje mobem, decyduje
+     * silnik wyłącznie na podstawie getControllingPassenger() zwracającego
+     * wartość niepustą). Zostawiam jako zwykłą metodę pomocniczą używaną
+     * wewnętrznie w travel() poniżej.
+     */
     protected boolean canBeControlledByRider() {
         return this.getControllingPassenger() != null;
     }
