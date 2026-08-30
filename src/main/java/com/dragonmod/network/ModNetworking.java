@@ -61,6 +61,9 @@ public class ModNetworking {
         ServerPlayNetworking.registerGlobalReceiver(DragonFlightInputPayload.TYPE, (payload, context) -> {
             ServerPlayer player = context.player();
             context.server().execute(() -> {
+                boolean isOnDragon = player.getVehicle() instanceof DragonEntity;
+                com.dragonmod.ModMain.LOGGER.info("[DragonMod-SERWER] odebrano pakiet ascend={} descend={} isOnDragon={}",
+                        payload.ascend(), payload.descend(), isOnDragon);
                 if (player.getVehicle() instanceof DragonEntity dragon && dragon.isOwnedBy(player)) {
                     dragon.setFlightInput(payload.ascend(), payload.descend());
                 }

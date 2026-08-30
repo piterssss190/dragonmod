@@ -42,9 +42,25 @@ public class ModMainClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.options == null) return;
 
+            // LOG DIAGNOSTYCZNY (co ok. 3 sekundy, niezależnie od klawiszy) -
+            // potwierdza, czy gra w ogóle rozpoznaje gracza jako siedzącego
+            // na smoku z perspektywy klienta.
+            if (client.player.tickCount % 60 == 0) {
+                com.dragonmod.ModMain.LOGGER.info("[DragonMod-KLIENT-TICK] vehicle={} isDragon={}",
+                        client.player.getVehicle(), client.player.getVehicle() instanceof DragonEntity);
+            }
+
             if (client.player.getVehicle() instanceof DragonEntity) {
                 boolean ascend = client.options.keyJump.isDown();
                 boolean descend = client.options.keyShift.isDown();
+
+                // LOG DIAGNOSTYCZNY - do usunięcia po znalezieniu przyczyny
+                // problemu z wznoszeniem/opadaniem. Wypisuje się tylko gdy
+                // faktycznie trzymasz Space lub Shift, żeby nie zaśmiecać logu.
+                if (ascend || descend) {
+                    com.dragonmod.ModMain.LOGGER.info("[DragonMod-KLIENT] jadę na smoku, wysyłam ascend={} descend={} canSend={}",
+                            ascend, descend, ClientPlayNetworking.canSend(ModNetworking.DragonFlightInputPayload.TYPE));
+                }
 
                 if (ClientPlayNetworking.canSend(ModNetworking.DragonFlightInputPayload.TYPE)) {
                     ClientPlayNetworking.send(new ModNetworking.DragonFlightInputPayload(ascend, descend));

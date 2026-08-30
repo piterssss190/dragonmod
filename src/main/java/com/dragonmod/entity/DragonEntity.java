@@ -289,6 +289,12 @@ public class DragonEntity extends TamableAnimal {
                 }
                 this.setDeltaMovement(currentVelocity.x, newY, currentVelocity.z);
 
+                // LOG DIAGNOSTYCZNY - do usunięcia po znalezieniu przyczyny problemu.
+                if (this.ascendInput || this.descendInput) {
+                    com.dragonmod.ModMain.LOGGER.info("[DragonMod-TRAVEL] ascendInput={} descendInput={} newY={} isNoGravity={}",
+                            this.ascendInput, this.descendInput, newY, this.isNoGravity());
+                }
+
                 float flySpeed = (float) this.getAttributeValue(Attributes.FLYING_SPEED);
                 this.setSpeed(flySpeed);
                 super.travel(new Vec3(strafe, 0.0D, forward));
